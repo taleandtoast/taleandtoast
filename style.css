@@ -40,12 +40,12 @@ header p {
 }
 
 
-nav ul li {
-    display: inline;
+nav ul li a {
+    display: inline; /* This should be on the <li> element, not the <a> */
     margin: 0 15px;
     text-decoration: none;
     color: #5c3a29;
-    font-weight: 50;!important; /* Thin font weight */
+    font-weight: 100!important; /* Thin font weight */
     font-size: 1.5em;
     transition: color 0.3s ease;
     text-transform: uppercase; /* All caps */
