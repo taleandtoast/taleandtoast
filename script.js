@@ -1,6 +1,60 @@
-console.log("Tale & Toast website loaded!");
+function openPopup(breadType) {
+    document.getElementById(`story-popup-${breadType}`).style.display = 'block';
+}
 
-// You can add more interactive features here, such as:
-// - Image sliders
-// - Form submissions for orders
-// - Dynamic story previews
+function closePopup(breadType) {
+    document.getElementById(`story-popup-${breadType}`).style.display = 'none';
+}
+
+function increaseQuantity(breadType, storyId) {
+    // Get the current quantity
+    let quantityElement = document.getElementById(`quantity-${breadType}-${storyId}`);
+
+    // Check if the element exists
+    if (quantityElement) {
+        let quantity = parseInt(quantityElement.innerText);
+        quantity++;
+        quantityElement.innerText = quantity;
+    } else {
+        console.error(`Quantity element not found for ${breadType} - ${storyId}`);
+    }
+}
+
+function decreaseQuantity(breadType, storyId) {
+    // Get the current quantity
+    let quantityElement = document.getElementById(`quantity-${breadType}-${storyId}`);
+
+    // Check if the element exists
+    if (quantityElement) {
+        let quantity = parseInt(quantityElement.innerText);
+        if (quantity > 0) {
+            quantity--;
+        }
+        quantityElement.innerText = quantity;
+    } else {
+        console.error(`Quantity element not found for ${breadType} - ${storyId}`);
+    }
+}
+
+function openPopup(breadType) {
+    let popup = document.getElementById(`story-popup-${breadType}`);
+    popup.style.display = 'block';
+
+    // Add an event listener to close the popup when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!popup.contains(event.target) && event.target!== document.querySelector(`button[onclick="openPopup('${breadType}')"]`)) {
+            closePopup(breadType);
+        }
+    });
+}
+
+function addToCart(breadType) {
+    // Get the selected quantities for each story
+    //... (implementation depends on your backend/cart system)...
+
+    // Add the selected bread and story quantities to the cart
+    //... (implementation depends on your backend/cart system)...
+
+    // Close the pop-up
+    closePopup(breadType);
+}
