@@ -19,18 +19,19 @@ header {
     margin-bottom: 30px;
 }
 
-header img { /* Styles for the logo */
-    max-width: 300px; /* Adjust the size as needed */
+header img {
+    max-width: 300px;
     height: auto;
     display: block;
     margin: 0 auto 20px;
 }
 
 header h1 {
+    font-family: 'Dancing Script', cursive; /* Updated font */
     margin-bottom: 15px;
-    font-size: 3em;
+    font-size: 3.5em; /* Increased size */
     color: #5c3a29;
-    font-family: 'Playfair Display', serif;
+    letter-spacing: 1px; /* Added letter spacing */
 }
 
 header p {
