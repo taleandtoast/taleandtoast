@@ -40,15 +40,15 @@ header p {
 }
 
 nav {
-    margin-top: -30px;
+    margin-top: -30px; /* Negative margin to pull the menu up */
 }
 
 nav ul li {
-    display: inline; /* This should be on the <li> element, not the <a> */
+    display: inline;
     margin: 0 15px;
     text-decoration: none;
     color: #5c3a29;
-    font-weight: 100!important; /* Thin font weight */
+    font-weight: 50;!important; /* Thin font weight */
     font-size: 1.5em;
     transition: color 0.3s ease;
     text-transform: uppercase; /* All caps */
@@ -57,7 +57,7 @@ nav ul li {
 nav ul li a {
     text-decoration: none;
     color: #5c3a29;
-    font-size: 1.1em; /* Adjusted font size */
+    font-size: 1.1em;
     transition: color 0.3s ease;
 }
 
@@ -164,7 +164,16 @@ footer {
     background-color: #ccc;
     margin-left: 10px;
 }
+
+/* Cart button position */
+header.container {
+    position: relative; /* To allow absolute positioning of the button */
+}
+
 #cart-button {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
     background-color: #f2f2f2; /* Example background color */
     border: none;
     padding: 10px 15px;
