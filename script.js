@@ -59,3 +59,27 @@ function addToCart(breadType) {
     // Optional: Display a confirmation message
     alert('Items added to cart!');
 }
+function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let totalCount = 0;
+    for (let breadType in cart) {
+        for (let storyId in cart[breadType]) {
+            totalCount += cart[breadType][storyId];
+        }
+    }
+    document.getElementById('cart-count').innerText = totalCount;
+}
+
+// Call the function initially
+updateCartCount();
+
+// Call the function whenever the cart is updated (e.g., in addToCart and decreaseQuantity functions)
+function addToCart(breadType) {
+    //... (your existing code)...
+    updateCartCount();
+}
+
+function decreaseQuantity(breadType, storyId) {
+    //... (your existing code)...
+    updateCartCount();
+}
