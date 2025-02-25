@@ -1,5 +1,13 @@
 function openPopup(breadType) {
-    document.getElementById(`story-popup-${breadType}`).style.display = 'block';
+    let popup = document.getElementById(`story-popup-${breadType}`);
+    popup.style.display = 'block';
+
+    // Add an event listener to close the popup when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!popup.contains(event.target) && event.target!== document.querySelector(`button[onclick="openPopup('${breadType}')"]`)) {
+            closePopup(breadType);
+        }
+    });
 }
 
 function closePopup(breadType) {
@@ -36,25 +44,18 @@ function decreaseQuantity(breadType, storyId) {
     }
 }
 
-function openPopup(breadType) {
-    let popup = document.getElementById(`story-popup-${breadType}`);
-    popup.style.display = 'block';
-
-    // Add an event listener to close the popup when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!popup.contains(event.target) && event.target!== document.querySelector(`button[onclick="openPopup('${breadType}')"]`)) {
-            closePopup(breadType);
-        }
-    });
-}
-
 function addToCart(breadType) {
     // Get the selected quantities for each story
-    //... (implementation depends on your backend/cart system)...
+    let selectedQuantities = {}; // Replace with your actual logic to get quantities
 
-    // Add the selected bread and story quantities to the cart
-    //... (implementation depends on your backend/cart system)...
+    // Store the selections in local storage
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    cart[breadType] = selectedQuantities;
+    localStorage.setItem('cart', JSON.stringify(cart));
 
     // Close the pop-up
     closePopup(breadType);
+
+    // Optional: Display a confirmation message
+    alert('Items added to cart!');
 }
