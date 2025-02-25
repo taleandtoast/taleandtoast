@@ -1,69 +1,56 @@
-function openPopup(breadType) {
-    let popup = document.getElementById(`story-popup-${breadType}`);
-    popup.style.display = 'block';
-
-    // Add an event listener to close the popup when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!popup.contains(event.target) && event.target!== document.querySelector(`button[onclick="openPopup('${breadType}')"]`)) {
-            closePopup(breadType);
+document.addEventListener('click', function(event) {
+    let popups = document.querySelectorAll('.story-popup');
+    popups.forEach(popup => {
+        if (!popup.contains(event.target) && !event.target.classList.contains('buy-button')) {
+            popup.style.display = 'none';
         }
     });
+});
+
+function openPopup(breadType) {
+    let popup = document.getElementById(`story-popup-${breadType}`);
+    if (popup) {
+        popup.style.display = 'block';
+    } else {
+        console.error('Popup not found:', `story-popup-${breadType}`);
+    }
 }
 
 function closePopup(breadType) {
-    document.getElementById(`story-popup-${breadType}`).style.display = 'none';
+    let popup = document.getElementById(`story-popup-${breadType}`);
+    if (popup) popup.style.display = 'none';
 }
 
 function increaseQuantity(breadType, storyId) {
-    // Get the current quantity
-    let quantityElement = document.getElementById(`quantity-<span class="math-inline">\{breadType\}\-</span>{storyId}`);
-
-    // Check if the element exists
+    let quantityElement = document.getElementById(`quantity-${breadType}-${storyId}`);
     if (quantityElement) {
-        let quantity = parseInt(quantityElement.innerText);
-        quantity++;
-        quantityElement.innerText = quantity;
-
-        // Update cart count
+        let quantity = parseInt(quantityElement.innerText) || 0;
+        quantityElement.innerText = quantity + 1;
         updateCartCount();
-    } else {
-        console.error(`Quantity element not found for ${breadType} - ${storyId}`);
     }
 }
 
 function decreaseQuantity(breadType, storyId) {
-    // Get the current quantity
-    let quantityElement = document.getElementById(`quantity-<span class="math-inline">\{breadType\}\-</span>{storyId}`);
-
-    // Check if the element exists
+    let quantityElement = document.getElementById(`quantity-${breadType}-${storyId}`);
     if (quantityElement) {
-        let quantity = parseInt(quantityElement.innerText);
+        let quantity = parseInt(quantityElement.innerText) || 0;
         if (quantity > 0) {
-            quantity--;
-            quantityElement.innerText = quantity;
-
-            // Update cart count
+            quantityElement.innerText = quantity - 1;
             updateCartCount();
         }
-    } else {
-        console.error(`Quantity element not found for ${breadType} - ${storyId}`);
     }
 }
 
 function addToCart(breadType) {
-    // Get the selected quantities for each story
     let selectedQuantities = {};
-    // Example:
-    selectedQuantities['story1'] = parseInt(document.getElementById('quantity-sourdough-story1').innerText);
-    selectedQuantities['story2'] = parseInt(document.getElementById('quantity-sourdough-story2').innerText);
-    //... get quantities for other stories...
+    document.querySelectorAll(`#story-popup-${breadType} .quantity`).forEach(element => {
+        let storyId = element.id.replace(`quantity-${breadType}-`, '');
+        selectedQuantities[storyId] = parseInt(element.innerText) || 0;
+    });
 
-    // Store the selections in local storage
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
     cart[breadType] = selectedQuantities;
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Reset the quantities in the pop-up
-    let quantityElements = document.querySelectorAll(`#story-popup-${breadType}.quantity`);
-    quantityElements.forEach(element => {
-        element.innerText =
+    closePopup(breadType);
+}
