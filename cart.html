@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-</head>
-<body>
-
-    <form id="order-form" action="https://formspree.io/f/your-formspree-id" method="POST" hidden>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tale & Toast - Your Cart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="style.css"> </head> <body> <form id="order-form" action="https://formspree.io/f/your-formspree-id" method="POST" hidden>
         <input type="hidden" id="email" name="email">
         <input type="hidden" id="cart-data" name="cart-data">
     </form>
@@ -25,7 +28,10 @@
             let itemDiv = document.createElement('div');
             itemDiv.innerHTML = `<h3>${breadType}</h3>`;
             for (let storyId in cart[breadType]) {
-                itemDiv.innerHTML += `<p>${storyId}: ${cart[breadType][storyId]}</p>`;
+                let quantity = cart[breadType][storyId];
+                if (quantity > 0) {
+                    itemDiv.innerHTML += `<p>${storyId}: ${quantity}</p>`;
+                }
             }
             cartItemsDiv.appendChild(itemDiv);
         }
@@ -36,7 +42,7 @@
             if (email) {
                 // Populate the hidden input fields
                 document.getElementById('email').value = email;
-                document.getElementById('cart-data').value = JSON.stringify(cart); // Send the whole cart data
+                document.getElementById('cart-data').value = JSON.stringify(cart);
 
                 // Submit the form
                 document.getElementById('order-form').submit();
