@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <form id="order-form" action="https://formspree.io/f/your-formspree-id" method="POST" hidden>
+        <input type="hidden" id="email" name="email">
+        <input type="hidden" id="cart-data" name="cart-data">
+    </form>
+
     <header>
         <div class="container">
             <img src="images/LOGO.png" alt="Tale & Toast Logo"> 
@@ -20,6 +26,7 @@
                     <li><a href="products.html">Our Bread</a></li>
                     <li><a href="stories.html">Our Stories</a></li>
                     <li><a href="contact.html">Contact</a></li>
+                    <li><a href="cart.html">Cart</a></li>
                 </ul>
             </nav>
             <p>Home-Baked Bread with Natural Ingredients & Heartwarming Stories</p>
