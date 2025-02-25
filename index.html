@@ -33,20 +33,76 @@
                 <div class="bread-item">
                     <img src="images/sourdough.jpg" alt="Sourdough Bread">
                     <h3>Artisan Sourdough</h3>
-                    <p>Made with organic flour and a slow fermentation process. Each loaf comes with a short story to enjoy.</p>
-                    <button class="buy-button">Order Now</button>
+                    <p>Made with organic flour and a slow fermentation process. Each loaf comes with a story to enjoy.</p>
+                    <button class="buy-button" onclick="openPopup('sourdough')">Buy Now</button>
+
+                    <div id="story-popup-sourdough" class="story-popup">
+                        <h3>Select Your Stories (Sourdough)</h3>
+                        <ul>
+                            <li>
+                                Story 1 - The Adventures of the Little Baker
+                                <button class="quantity-btn" onclick="decreaseQuantity('sourdough', 'story1')">-</button>
+                                <span id="quantity-sourdough-story1" class="quantity">0</span>
+                                <button class="quantity-btn" onclick="increaseQuantity('sourdough', 'story1')">+</button>
+                            </li>
+                            <li>
+                                Story 2 - The Magical Oven
+                                <button class="quantity-btn" onclick="decreaseQuantity('sourdough', 'story2')">-</button>
+                                <span id="quantity-sourdough-story2" class="quantity">0</span>
+                                <button class="quantity-btn" onclick="increaseQuantity('sourdough', 'story2')">+</button>
+                            </li>
+                            <li>
+                                Story 3 - The Bread That Could Fly
+                                <button class="quantity-btn" onclick="decreaseQuantity('sourdough', 'story3')">-</button>
+                                <span id="quantity-sourdough-story3" class="quantity">0</span>
+                                <button class="quantity-btn" onclick="increaseQuantity('sourdough', 'story3')">+</button>
+                            </li>
+                            </ul>
+                        <button class="add-to-cart-btn" onclick="addToCart('sourdough')">Add to Cart</button>
+                        <button class="close-btn" onclick="closePopup('sourdough')">Close</button>
+                    </div>
                 </div>
+
                 <div class="bread-item">
                     <img src="images/multigrain.jpg" alt="Multigrain Bread">
                     <h3>Hearty Multigrain</h3>
                     <p>Packed with wholesome grains and seeds. Perfect for sandwiches and toasting. Includes a family-friendly tale.</p>
-                    <button class="buy-button">Order Now</button>
+                    <button class="buy-button" onclick="openPopup('multigrain')">Buy Now</button>
+
+                    <div id="story-popup-multigrain" class="story-popup">
+                        <h3>Select Your Stories (Multigrain)</h3>
+                        <ul>
+                            <li>
+                                Story 4 - The Grain Guardians
+                                <button class="quantity-btn" onclick="decreaseQuantity('multigrain', 'story4')">-</button>
+                                <span id="quantity-multigrain-story4" class="quantity">0</span>
+                                <button class="quantity-btn" onclick="increaseQuantity('multigrain', 'story4')">+</button>
+                            </li>
+                            </ul>
+                        <button class="add-to-cart-btn" onclick="addToCart('multigrain')">Add to Cart</button>
+                        <button class="close-btn" onclick="closePopup('multigrain')">Close</button>
+                    </div>
                 </div>
+
                 <div class="bread-item">
                     <img src="images/rye.jpg" alt="Rye Bread">
                     <h3>Rustic Rye</h3>
                     <p>A classic rye with a rich, earthy flavor. Enjoy it with your favorite toppings and a charming story.</p>
-                    <button class="buy-button">Order Now</button>
+                    <button class="buy-button" onclick="openPopup('rye')">Buy Now</button>
+
+                    <div id="story-popup-rye" class="story-popup">
+                        <h3>Select Your Stories (Rye)</h3>
+                        <ul>
+                            <li>
+                                Story 7 - The Mystery of the Missing Rye
+                                <button class="quantity-btn" onclick="decreaseQuantity('rye', 'story7')">-</button>
+                                <span id="quantity-rye-story7" class="quantity">0</span>
+                                <button class="quantity-btn" onclick="increaseQuantity('rye', 'story7')">+</button>
+                            </li>
+                            </ul>
+                        <button class="add-to-cart-btn" onclick="addToCart('rye')">Add to Cart</button>
+                        <button class="close-btn" onclick="closePopup('rye')">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,7 +115,6 @@
             <p>Our ingredients are sourced locally, and we take pride in our slow, traditional baking methods. We hope you enjoy the taste of our bread and the warmth of our stories.</p>
         </div>
     </section>
-
 
     <section id="our-stories">
         <div class="container">
