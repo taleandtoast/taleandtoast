@@ -7,73 +7,76 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
-    <link rel="stylesheet" href="style.css"> </head> <body> <form id="order-form" action="https://formspree.io/f/your-formspree-id" method="POST" hidden>
-        <input type="hidden" id="email" name="email">
-        <input type="hidden" id="cart-data" name="cart-data">
-    </form>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
     <h2>Your Cart</h2>
-    <div id="cart-items">
-        </div>
+    <div id="cart-items"></div>
 
     <button onclick="submitOrder()">Submit Order</button>
 
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Get the cart data from local storage
-        let cart = JSON.parse(localStorage.getItem('cart')) || {};
+        document.addEventListener("DOMContentLoaded", function() {
+            emailjs.init("spiXlsfuBjJ_dHE75"); // Replace with your EmailJS public key
 
-        // Display the cart items
-        let cartItemsDiv = document.getElementById('cart-items');
-        for (let breadType in cart) {
-            let itemDiv = document.createElement('div');
-            itemDiv.innerHTML = `<h3>${breadType}</h3>`;
-            for (let storyId in cart[breadType]) {
-                let quantity = cart[breadType][storyId];
-                if (quantity > 0) {
-                    itemDiv.innerHTML += `<p>${storyId}: ${quantity}</p>`;
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            let cartItemsDiv = document.getElementById('cart-items');
+
+            for (let breadType in cart) {
+                let itemDiv = document.createElement('div');
+                itemDiv.innerHTML = `<h3>${breadType}</h3>`;
+                for (let storyId in cart[breadType]) {
+                    let quantity = cart[breadType][storyId];
+                    if (quantity > 0) {
+                        itemDiv.innerHTML += `<p>${storyId}: ${quantity}</p>`;
+                    }
+                }
+                cartItemsDiv.appendChild(itemDiv);
+            }
+        });
+
+        function submitOrder() {
+            let email = prompt("Please enter your email address:");
+            if (!email) {
+                alert("Email is required to place an order.");
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            let cartDetails = "";
+            for (let breadType in cart) {
+                cartDetails += `${breadType}:\n`;
+                for (let storyId in cart[breadType]) {
+                    let quantity = cart[breadType][storyId];
+                    if (quantity > 0) {
+                        cartDetails += `  - ${storyId}: ${quantity}\n`;
+                    }
                 }
             }
-            cartItemsDiv.appendChild(itemDiv);
-        }
 
-function submitOrder() {
-    let email = prompt("Please enter your email address:");
-    if (email) {
-        // Get the cart data from local storage
-        let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            let templateParams = {
+                to_email: 'taleandtoast@gmail.com', // Replace with your recipient email
+                from_name: email,
+                cart_details: cartDetails
+            };
 
-        // Format the cart data into a string
-        let cartDetails = "";
-        for (let breadType in cart) {
-            cartDetails += `<h3>${breadType}</h3>`;
-            for (let storyId in cart[breadType]) {
-                let quantity = cart[breadType][storyId];
-                if (quantity > 0) {
-                    cartDetails += `<p>${storyId}: ${quantity}</p>`;
-                }
-            }
-        }
-
-        // Prepare the email data
-        let templateParams = {
-            to_email: 'taleandtoast@gmail.com', // Replace with your email address
-            from_name: email,
-            cart_details: cartDetails // Include the formatted cart details
-        };
-
-        // Send the email using EmailJS
-        emailjs.send('service_6qmoq6g', 'template_porl14s', templateParams) // Replace with your Service ID and Template ID
-          .then(function(response) {
+            emailjs.send('service_6qmoq6g', 'template_porl14s', templateParams)
+            .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
-                // Optionally, display a success message to the user
                 alert('Order submitted successfully!');
-            }, function(error) {
-                console.log('FAILED...', error);
-                // Optionally, display an error message to the user
+
+                // Clear the cart
+                localStorage.removeItem('cart');
+                document.getElementById('cart-items').innerHTML = "<p>Your cart is now empty.</p>";
+            })
+            .catch(function(error) {
+                console.error('FAILED...', error);
                 alert('Error submitting order. Please try again later.');
             });
-    }
-}
+        }
     </script>
+
 </body>
 </html>
