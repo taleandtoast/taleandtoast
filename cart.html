@@ -9,17 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="style.css">
 </head>
+header>
+        <div class="container">
+            <img src="images/LOGO.png" alt="Tale & Toast Logo"> 
+
+            <button id="cart-button" onclick="window.location.href='cart.html'">
+                <img src="images/bread-basket-icon.svg" alt="Cart Icon"> <span id="cart-count">0</span>
+            </button>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="products.html">Our Bread</a></li>
+                    <li><a href="stories.html">Our Stories</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <p>Home-Baked Bread with Natural Ingredients & Heartwarming Stories</p>
+        </div>
+    </header>
+    
 <body>
-    <!-- Navigation Menu (Copied from index.html) -->
-    <nav id="main-menu">
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="menu.html">Menu</a></li>
-            <li><a href="cart.html" class="active">Cart <span id="cart-count">0</span></a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
 
     <h2>Your Cart</h2>
     <div id="cart-items"></div>
