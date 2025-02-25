@@ -11,6 +11,11 @@ function openPopup(breadType) {
     let popup = document.getElementById(`story-popup-${breadType}`);
     if (popup) {
         popup.style.display = 'block';
+
+        // Prevent immediate closure when clicking inside the popup
+        setTimeout(() => {
+            document.addEventListener('click', closePopupOnOutsideClick);
+        }, 100);
     } else {
         console.error('Popup not found:', `story-popup-${breadType}`);
     }
@@ -18,7 +23,19 @@ function openPopup(breadType) {
 
 function closePopup(breadType) {
     let popup = document.getElementById(`story-popup-${breadType}`);
-    if (popup) popup.style.display = 'none';
+    if (popup) {
+        popup.style.display = 'none';
+        document.removeEventListener('click', closePopupOnOutsideClick);
+    }
+}
+
+function closePopupOnOutsideClick(event) {
+    let popups = document.querySelectorAll('.story-popup');
+    popups.forEach(popup => {
+        if (!popup.contains(event.target) && !event.target.classList.contains('buy-button')) {
+            popup.style.display = 'none';
+        }
+    });
 }
 
 function increaseQuantity(breadType, storyId) {
@@ -95,5 +112,62 @@ function updateCartCount() {
     }
 }
 
-// Call updateCartCount on page load to show the correct number when refreshing
+// Ensure cart count updates on page load
 document.addEventListener("DOMContentLoaded", updateCartCount);
+
+
+// --------------- EMAILJS ORDER SUBMISSION -----------------
+function submitOrder() {
+    let email = prompt("Please enter your email address:");
+    if (!email) {
+        alert("Email is required to place an order.");
+        return;
+    }
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    if (Object.keys(cart).length === 0) {
+        alert("Your cart is empty.");
+        return;
+    }
+
+    // Format the cart data into a readable email format
+    let cartDetails = "";
+    for (let breadType in cart) {
+        cartDetails += `<h3>${breadType}</h3>`;
+        for (let storyId in cart[breadType]) {
+            let quantity = cart[breadType][storyId];
+            if (quantity > 0) {
+                cartDetails += `<p>${storyId}: ${quantity}</p>`;
+            }
+        }
+    }
+
+    let templateParams = {
+        to_email: 'taleandtoast@gmail.com',  // Replace with your email
+        from_name: email,
+        cart_details: cartDetails
+    };
+
+    // Ensure EmailJS is initialized
+    if (!emailjs) {
+        console.error("EmailJS is not loaded.");
+        alert("Error: Email service is unavailable.");
+        return;
+    }
+
+    emailjs.send('service_6qmoq6g', 'template_porl14s', templateParams)
+        .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            alert('Order submitted successfully!');
+
+            // Clear the cart after successful submission
+            localStorage.removeItem('cart');
+            updateCartCount();
+
+            // Redirect to homepage or confirmation page
+            window.location.href = "index.html";
+        }, function(error) {
+            console.error('FAILED...', error);
+            alert('Error submitting order. Please try again later.');
+        });
+}
