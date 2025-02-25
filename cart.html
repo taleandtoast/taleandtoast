@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+    <form id="order-form" action="https://formspree.io/f/your-formspree-id" method="POST" hidden>
+        <input type="hidden" id="email" name="email">
+        <input type="hidden" id="cart-data" name="cart-data">
+    </form>
+
+    <h2>Your Cart</h2>
+    <div id="cart-items">
+        </div>
+
+    <button onclick="submitOrder()">Submit Order</button>
+
+    <script>
+        // Get the cart data from local storage
+        let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+        // Display the cart items
+        let cartItemsDiv = document.getElementById('cart-items');
+        for (let breadType in cart) {
+            let itemDiv = document.createElement('div');
+            itemDiv.innerHTML = `<h3>${breadType}</h3>`;
+            for (let storyId in cart[breadType]) {
+                itemDiv.innerHTML += `<p>${storyId}: ${cart[breadType][storyId]}</p>`;
+            }
+            cartItemsDiv.appendChild(itemDiv);
+        }
+
+        function submitOrder() {
+            // Get the email from somewhere (e.g., prompt the user)
+            let email = prompt("Please enter your email address:");
+            if (email) {
+                // Populate the hidden input fields
+                document.getElementById('email').value = email;
+                document.getElementById('cart-data').value = JSON.stringify(cart); // Send the whole cart data
+
+                // Submit the form
+                document.getElementById('order-form').submit();
+            }
+        }
+    </script>
+</body>
+</html>
