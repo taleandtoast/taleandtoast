@@ -16,7 +16,7 @@ header {
     background-color: #e9dac1;
     text-align: center;
     padding: 20px 0;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 header img {
@@ -172,8 +172,8 @@ header.container {
 
 #cart-button {
     position: absolute;
-    top: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
+    top: 30px; /* Adjust as needed */
+    right: 30px; /* Adjust as needed */
     background-color: #f2f2f2; /* Example background color */
     border: none;
     padding: 10px 15px;
@@ -182,7 +182,7 @@ header.container {
     padding: 8px 12px; /* Adjust padding to fit the icon */
 }
 #cart-button img {
-    width: 20px; /* Adjust size as needed */
+    width: 40px; /* Adjust size as needed */
     height: auto;
 }
 #cart-count {
