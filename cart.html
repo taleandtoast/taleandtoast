@@ -11,22 +11,51 @@
 </head>
 <body>
 
-    <h2>Your Cart</h2>
-    <div id="cart-items"></div>
+    <!-- Navigation Menu -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="cart.html" class="active">Cart (<span id="cart-count">0</span>)</a></li>
+        </ul>
+    </nav>
 
-    <button onclick="submitOrder()">Submit Order</button>
+    <main>
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+
+        <!-- Buttons -->
+        <div class="cart-buttons">
+            <button onclick="emptyCart()">Empty Cart</button>
+            <button onclick="submitOrder()">Submit Order</button>
+        </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             emailjs.init("spiXlsfuBjJ_dHE75"); // Replace with your EmailJS public key
 
-            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            updateCartDisplay();
+            updateCartCount();
+        });
+
+        function updateCartDisplay() {
             let cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = ""; // Clear current display
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+            if (Object.keys(cart).length === 0) {
+                cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+                return;
+            }
 
             for (let breadType in cart) {
                 let itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
                 itemDiv.innerHTML = `<h3>${breadType}</h3>`;
+
                 for (let storyId in cart[breadType]) {
                     let quantity = cart[breadType][storyId];
                     if (quantity > 0) {
@@ -35,7 +64,33 @@
                 }
                 cartItemsDiv.appendChild(itemDiv);
             }
-        });
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            let totalCount = 0;
+
+            Object.values(cart).forEach(breadItems => {
+                Object.values(breadItems).forEach(quantity => {
+                    totalCount += quantity;
+                });
+            });
+
+            let cartIcon = document.getElementById('cart-count');
+            if (cartIcon) {
+                cartIcon.innerText = totalCount;
+                cartIcon.style.display = totalCount > 0 ? 'inline' : 'none';
+            }
+        }
+
+        function emptyCart() {
+            if (confirm("Are you sure you want to empty your cart?")) {
+                localStorage.removeItem('cart');
+                updateCartDisplay();
+                updateCartCount();
+                alert("Your cart is now empty.");
+            }
+        }
 
         function submitOrder() {
             let email = prompt("Please enter your email address:");
@@ -45,6 +100,11 @@
             }
 
             let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            if (Object.keys(cart).length === 0) {
+                alert("Your cart is empty. Add items before placing an order.");
+                return;
+            }
+
             let cartDetails = "";
             for (let breadType in cart) {
                 cartDetails += `${breadType}:\n`;
@@ -66,10 +126,7 @@
             .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
                 alert('Order submitted successfully!');
-
-                // Clear the cart
-                localStorage.removeItem('cart');
-                document.getElementById('cart-items').innerHTML = "<p>Your cart is now empty.</p>";
+                emptyCart(); // Clear the cart after successful submission
             })
             .catch(function(error) {
                 console.error('FAILED...', error);
