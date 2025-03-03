@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,14 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="style.css">
 </head>
-<header>
+<body>
+    <header>
         <div class="container">
             <img src="images/LOGO.png" alt="Tale & Toast Logo"> 
-
             <button id="cart-button" onclick="window.location.href='cart.html'">
                 <img src="images/bread-basket-icon.svg" alt="Cart Icon"> <span id="cart-count">0</span>
             </button>
-
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -26,33 +25,41 @@
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
-            <p>Home-Baked Bread with Natural Ingredients & Heartwarming Stories</p>
         </div>
     </header>
     
-<body>
+    <main class="cart-container">
+        <h2>Your Cart</h2>
+        <div id="cart-items" class="cart-items"></div>
+        
+        <div class="cart-actions">
+            <button class="submit-button" onclick="submitOrder()">Submit Order</button>
+            <button class="empty-button" onclick="emptyCart()" id="empty-cart">Empty Cart</button>
+        </div>
+    </main>
 
-    <h2>Your Cart</h2>
-    <div id="cart-items"></div>
-
-    <button onclick="submitOrder()">Submit Order</button>
-    <button onclick="emptyCart()" id="empty-cart">Empty Cart</button>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Tale & Toast. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            emailjs.init("spiXlsfuBjJ_dHE75"); // Replace with your EmailJS public key
+            emailjs.init("spiXlsfuBjJ_dHE75");
             updateCartDisplay();
         });
 
         function updateCartDisplay() {
             let cart = JSON.parse(localStorage.getItem('cart')) || {};
             let cartItemsDiv = document.getElementById('cart-items');
-            cartItemsDiv.innerHTML = ""; // Clear before re-rendering
+            cartItemsDiv.innerHTML = "";
 
             let hasItems = false;
             for (let breadType in cart) {
                 let itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
                 itemDiv.innerHTML = `<h3>${breadType}</h3>`;
                 for (let storyId in cart[breadType]) {
                     let quantity = cart[breadType][storyId];
@@ -63,9 +70,8 @@
                 }
                 cartItemsDiv.appendChild(itemDiv);
             }
-
             if (!hasItems) {
-                cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+                cartItemsDiv.innerHTML = "<p class='empty-message'>Your cart is empty.</p>";
             }
             updateCartCount();
         }
@@ -90,19 +96,17 @@
             }
 
             let templateParams = {
-                to_email: 'taleandtoast@gmail.com', // Replace with your recipient email
+                to_email: 'taleandtoast@gmail.com',
                 from_name: email,
                 cart_details: cartDetails
             };
 
             emailjs.send('service_6qmoq6g', 'template_porl14s', templateParams)
             .then(function(response) {
-                console.log('SUCCESS!', response.status, response.text);
                 alert('Order submitted successfully!');
-                emptyCart(); // Clear cart automatically after success
+                emptyCart();
             })
             .catch(function(error) {
-                console.error('FAILED...', error);
                 alert('Error submitting order. Please try again later.');
             });
         }
