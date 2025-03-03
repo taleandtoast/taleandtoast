@@ -11,8 +11,6 @@ function openPopup(breadType) {
     let popup = document.getElementById(`story-popup-${breadType}`);
     if (popup) {
         popup.style.display = 'block';
-
-        // Prevent immediate closure when clicking inside the popup
         setTimeout(() => {
             document.addEventListener('click', closePopupOnOutsideClick);
         }, 100);
@@ -60,111 +58,116 @@ function decreaseQuantity(breadType, storyId) {
 
 function addToCart(breadType) {
     let selectedQuantities = {};
-    let totalAdded = 0; // Track total items added
-
-    // Get selected quantities
+    let totalAdded = 0;
     document.querySelectorAll(`#story-popup-${breadType} .quantity`).forEach(element => {
         let storyId = element.id.replace(`quantity-${breadType}-`, '');
         let quantity = parseInt(element.innerText) || 0;
-
         if (quantity > 0) {
             selectedQuantities[storyId] = quantity;
             totalAdded += quantity;
         }
-
-        // Reset quantity in the popup to 0
         element.innerText = '0';
     });
-
     if (totalAdded === 0) {
         alert("Please select at least one item.");
         return;
     }
-
-    // Store selections in local storage
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
     cart[breadType] = selectedQuantities;
     localStorage.setItem('cart', JSON.stringify(cart));
-
-    // Update the cart count in the top right corner
     updateCartCount();
-
-    // Close the popup
     closePopup(breadType);
 }
 
 function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
     let totalCount = 0;
-
-    // Sum up all the quantities from the cart
     Object.values(cart).forEach(breadItems => {
         Object.values(breadItems).forEach(quantity => {
             totalCount += quantity;
         });
     });
-
-    // Update the cart icon count
     let cartIcon = document.getElementById('cart-count');
     if (cartIcon) {
         cartIcon.innerText = totalCount;
-        cartIcon.style.display = totalCount > 0 ? 'block' : 'none'; // Hide if 0
+        cartIcon.style.display = totalCount > 0 ? 'block' : 'none';
     }
 }
 
-// Ensure cart count updates on page load
-document.addEventListener("DOMContentLoaded", updateCartCount);
+document.addEventListener("DOMContentLoaded", function() {
+    updateCartCount();
+    updateCartDisplay();
+});
 
+function updateCartDisplay() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let cartItemsDiv = document.getElementById('cart-items');
+    cartItemsDiv.innerHTML = "";
+    let hasItems = false;
+    let totalPrice = 0;
+    const prices = { 'Sourdough': 7.00, 'Multigrain': 8.00, 'Rye': 8.50 };
 
-// --------------- EMAILJS ORDER SUBMISSION -----------------
+    for (let breadType in cart) {
+        let itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `<h3>${breadType}</h3>`;
+        for (let storyId in cart[breadType]) {
+            let quantity = cart[breadType][storyId];
+            if (quantity > 0) {
+                let itemPrice = (prices[breadType] || 0) * quantity;
+                totalPrice += itemPrice;
+                itemDiv.innerHTML += `<p>${storyId}: ${quantity} - CAD ${itemPrice.toFixed(2)}</p>`;
+                hasItems = true;
+            }
+        }
+        cartItemsDiv.appendChild(itemDiv);
+    }
+    if (!hasItems) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+    } else {
+        let totalDiv = document.createElement('div');
+        totalDiv.innerHTML = `<h3>Total Price: CAD ${totalPrice.toFixed(2)}</h3>`;
+        cartItemsDiv.appendChild(totalDiv);
+    }
+    updateCartCount();
+}
+
 function submitOrder() {
     let email = prompt("Please enter your email address:");
     if (!email) {
         alert("Email is required to place an order.");
         return;
     }
-
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
     if (Object.keys(cart).length === 0) {
         alert("Your cart is empty.");
         return;
     }
-
-    // Format the cart data into a readable email format
     let cartDetails = "";
+    let totalPrice = 0;
+    const prices = { 'Sourdough': 7.00, 'Multigrain': 8.00, 'Rye': 8.50 };
     for (let breadType in cart) {
         cartDetails += `<h3>${breadType}</h3>`;
         for (let storyId in cart[breadType]) {
             let quantity = cart[breadType][storyId];
             if (quantity > 0) {
-                cartDetails += `<p>${storyId}: ${quantity}</p>`;
+                let itemPrice = (prices[breadType] || 0) * quantity;
+                totalPrice += itemPrice;
+                cartDetails += `<p>${storyId}: ${quantity} - CAD ${itemPrice.toFixed(2)}</p>`;
             }
         }
     }
-
+    cartDetails += `<h3>Total Price: CAD ${totalPrice.toFixed(2)}</h3>`;
     let templateParams = {
-        to_email: 'taleandtoast@gmail.com',  // Replace with your email
+        to_email: 'taleandtoast@gmail.com',
         from_name: email,
         cart_details: cartDetails
     };
-
-    // Ensure EmailJS is initialized
-    if (!emailjs) {
-        console.error("EmailJS is not loaded.");
-        alert("Error: Email service is unavailable.");
-        return;
-    }
-
     emailjs.send('service_6qmoq6g', 'template_porl14s', templateParams)
         .then(function(response) {
             console.log('SUCCESS!', response.status, response.text);
             alert('Order submitted successfully!');
-
-            // Clear the cart after successful submission
             localStorage.removeItem('cart');
             updateCartCount();
-
-            // Redirect to homepage or confirmation page
             window.location.href = "index.html";
         }, function(error) {
             console.error('FAILED...', error);
