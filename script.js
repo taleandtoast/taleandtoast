@@ -144,7 +144,7 @@ function submitOrder() {
     }
     let cartDetails = "";
     let totalPrice = 0;
-    const prices = { 'Sourdough': 7.00, 'Multigrain': 8.00, 'Rye': 8.50 };
+    const prices = { 'sourdough': 7.00, 'multigrain': 8.00, 'rye': 8.50 };
     for (let breadType in cart) {
         cartDetails += `<h3>${breadType}</h3>`;
         for (let storyId in cart[breadType]) {
